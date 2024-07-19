@@ -1,0 +1,23 @@
+nextdoor-backend
+    src
+    ├── models
+    │   ├── User.js
+    │   ├── Post.js
+    │   ├── Neighborhood.js
+    ├── routes
+    │   ├── auth.js
+    │   ├── posts.js
+    │   ├── neighborhoods.js
+    ├── middleware
+    │   ├── auth.js
+    ├── controllers
+    │   ├── authController.js
+    │   ├── postController.js
+    │   ├── neighborhoodController.js
+    ├── server.js
+    └── config
+    ├── db.js
+├── .env
+├── package-lock.json
+├── package.json
+├── Structure

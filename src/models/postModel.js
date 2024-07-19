@@ -1,0 +1,31 @@
+// src/models/postModel.js
+import mongoose from "mongoose";
+
+const postSchema = new mongoose.Schema({
+  user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+  title: { type: String, required: true },
+  content: { type: String, required: true },
+  picture: { type: String },
+  date: { type: Date, default: Date.now },
+  likes: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+  tags: [{ type: String }],
+  comments: { type: Number, default: 0 },
+  shares: { type: Number, default: 0 },
+  views: { type: Number, default: 0 },
+  contentType: { type: String, enum: ["text", "photo", "video", "link"] },
+  taggedUsers: [{ type: mongoose.Schema.Types.ObjectId, ref: "user" }],
+  location: {
+    type: {
+      type: String,
+      enum: ["Point"],
+      required: false,
+    },
+    coordinates: { type: [Number], required: false },
+  },
+});
+
+postSchema.index({ location: "2dsphere" });
+
+const Post = mongoose.model("Post", postSchema);
+
+export default Post;
