@@ -1,4 +1,3 @@
-// src/routes/allRoutes.js
 import express from "express";
 import authRoutes from "./authRoutes.js";
 import postRoutes from "./postRoutes.js";
@@ -7,8 +6,9 @@ import commentRoutes from "./commentRoutes.js";
 import listingRoutes from "./listingRoutes.js";
 import connectionRequestRouter from "./connectionRequestRoutes.js";
 import passwordRoutes from "./passwordRoutes.js";
-import feedRouter from "./feedRoutes.js";
-import uploadRouter from "./uploadRoutes.js";
+import feedRoutes from "./feedRoutes.js";
+import uploadRoutes from "./uploadRoutes.js";
+import inviteRoutes from "./inviteRoutes.js";
 
 const allRoutes = express.Router();
 
@@ -19,7 +19,8 @@ allRoutes.use("/neighborhoods", neighborhoodRoutes);
 allRoutes.use("/comments", commentRoutes);
 allRoutes.use("/listings", listingRoutes);
 allRoutes.use("/connections", connectionRequestRouter);
-allRoutes.use("/feed", feedRouter);
-allRoutes.use("/upload", uploadRouter);
+allRoutes.use("/feed", feedRoutes);
+allRoutes.use("/upload", uploadRoutes);
+allRoutes.use("/invite", inviteRoutes);
 
 export default allRoutes;
