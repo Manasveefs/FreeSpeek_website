@@ -2,6 +2,7 @@ import User from "../models/userModel.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import axios from "axios";
+import { admin } from "../services/firebase.js";
 
 const authController = {
   register: async (req, res) => {
@@ -29,13 +30,10 @@ const authController = {
             }
           );
 
-          console.log("Geocoding response:", response.data);
-
           if (response.data.results.length > 0) {
             const loc = response.data.results[0].geometry;
             coordinates = [loc.lng, loc.lat];
           } else {
-            console.error("Geocoding error:", response.data);
             return res
               .status(400)
               .json({ message: "Invalid address", error: response.data });
@@ -98,6 +96,40 @@ const authController = {
     } catch (error) {
       console.error(error);
       res.status(500).send({ message: "Internal Server error", error });
+    }
+  },
+  oauth: async (req, rs) => {
+    const { idToken } = req.body;
+    if (!idToken) {
+      return res.status(400).json({ message: "ID token is required" });
+    }
+    try {
+      const decodedToken = await admin.auth().verifyIdToken(idToken);
+      // const email = decodedToken.email;
+      const { uid, email, name, picture } = decodedToken;
+      let user = await User.findOne({ email });
+
+      if (!user) {
+        user = new User({
+          email,
+          password: uid,
+          firstName: name,
+          profilePicture: picture,
+          location: {
+            type: "Point",
+            coordinates: [0, 0],
+          },
+        });
+        await user.save();
+      }
+      const payload = { user: { id: user.id } };
+      const token = jwt.sign(payload, process.env.JWT_SECRET, {
+        expireIn: 3600,
+      });
+
+      res.json({ token });
+    } catch (error) {
+      res.status(500).send({ message: "Error verifying ID token", error });
     }
   },
 

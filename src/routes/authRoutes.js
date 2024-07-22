@@ -35,5 +35,6 @@ authRouter.put(
   adminMiddleware,
   authController.adminReactivateUser
 );
+authRouter.post("/oauth", authController.oauth);
 
 export default authRouter;

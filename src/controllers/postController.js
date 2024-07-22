@@ -1,6 +1,6 @@
 import Post from "../models/postModel.js";
 import User from "../models/userModel.js";
-import { bucket } from "../../firebase.js";
+import { bucket } from "../services/firebase.js";
 import { v4 as uuidv4 } from "uuid";
 
 const postController = {
