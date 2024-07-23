@@ -19,6 +19,16 @@ const UserSchema = new mongoose.Schema({
     coordinates: { type: [Number], required: true },
     address: { type: String, required: true },
   },
+  registeredWith: {
+    type: String,
+    enum: ["email", "google", "facebook", "apple", "phone"],
+    default: "email",
+  },
+  lastLoginWith: {
+    type: String,
+    enum: ["email", "google", "facebook", "apple", "phone"],
+    default: "email",
+  },
 });
 
 UserSchema.index({ location: "2dsphere" });

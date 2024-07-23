@@ -2,7 +2,6 @@ import User from "../models/userModel.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import axios from "axios";
-import { admin } from "../services/firebase.js";
 
 const authController = {
   register: async (req, res) => {
@@ -18,7 +17,6 @@ const authController = {
       if (location.coordinates && location.coordinates.length === 2) {
         coordinates = location.coordinates;
       } else if (location.address) {
-        // Convert address to coordinates using OpenCage Geocoding API
         try {
           const response = await axios.get(
             `https://api.opencagedata.com/geocode/v1/json`,
@@ -53,9 +51,11 @@ const authController = {
         password: hashedPassword,
         location: {
           type: "Point",
-          coordinates: coordinates,
+          coordinates,
           address: location.address,
         },
+        registeredWith: "email",
+        lastLoginWith: "email",
       });
 
       await user.save();
@@ -87,6 +87,9 @@ const authController = {
         return res.status(403).json({ message: "User account is suspended" });
       }
 
+      user.lastLoginWith = "email";
+      await user.save();
+
       const payload = { user: { id: user.id } };
       const token = jwt.sign(payload, process.env.JWT_SECRET, {
         expiresIn: 3600,
@@ -96,40 +99,6 @@ const authController = {
     } catch (error) {
       console.error(error);
       res.status(500).send({ message: "Internal Server error", error });
-    }
-  },
-  oauth: async (req, rs) => {
-    const { idToken } = req.body;
-    if (!idToken) {
-      return res.status(400).json({ message: "ID token is required" });
-    }
-    try {
-      const decodedToken = await admin.auth().verifyIdToken(idToken);
-      // const email = decodedToken.email;
-      const { uid, email, name, picture } = decodedToken;
-      let user = await User.findOne({ email });
-
-      if (!user) {
-        user = new User({
-          email,
-          password: uid,
-          firstName: name,
-          profilePicture: picture,
-          location: {
-            type: "Point",
-            coordinates: [0, 0],
-          },
-        });
-        await user.save();
-      }
-      const payload = { user: { id: user.id } };
-      const token = jwt.sign(payload, process.env.JWT_SECRET, {
-        expireIn: 3600,
-      });
-
-      res.json({ token });
-    } catch (error) {
-      res.status(500).send({ message: "Error verifying ID token", error });
     }
   },
 
@@ -195,22 +164,11 @@ const authController = {
   },
 
   reactivateUser: async (req, res) => {
-    console.log("reactivateUser function called");
-
     try {
-      console.log("req.user:", req.user); // Log the req.user object
-
-      const user = await User.findById(req.user.id); // Use req.user.id
+      const user = await User.findById(req.user.id);
       if (!user) {
-        console.log("User not found");
         return res.status(404).json({ message: "User not found" });
       }
-
-      // Log the entire user object
-      console.log("User object:", JSON.stringify(user, null, 2));
-
-      // Check and log the isSuspended field specifically
-      console.log(`User isSuspended: ${user.isSuspended}`);
 
       if (!user.isSuspended) {
         return res
@@ -221,7 +179,6 @@ const authController = {
       user.isSuspended = false;
       await user.save();
 
-      console.log("User account reactivated:", JSON.stringify(user, null, 2));
       res.json({ message: "User account reactivated successfully", user });
     } catch (error) {
       console.error("Error in reactivating user:", error);

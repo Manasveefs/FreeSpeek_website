@@ -3,6 +3,8 @@ import {
   getAuth,
   GoogleAuthProvider,
   FacebookAuthProvider,
+  OAuthProvider,
+  PhoneAuthProvider,
 } from "firebase/auth";
 import dotenv from "dotenv";
 
@@ -23,5 +25,13 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const googleAuthProvider = new GoogleAuthProvider();
 const facebookAuthProvider = new FacebookAuthProvider();
+const appleAuthProvider = new OAuthProvider("apple.com");
+const phoneAuthProvider = PhoneAuthProvider();
 
-export { auth, googleAuthProvider, facebookAuthProvider };
+export {
+  auth,
+  googleAuthProvider,
+  facebookAuthProvider,
+  appleAuthProvider,
+  phoneAuthProvider,
+};
