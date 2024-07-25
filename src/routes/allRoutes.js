@@ -9,6 +9,7 @@ import passwordRoutes from "./passwordRoutes.js";
 import feedRoutes from "./feedRoutes.js";
 import uploadRoutes from "./uploadRoutes.js";
 import inviteRoutes from "./inviteRoutes.js";
+import chatRoutes from "./chatRoutes.js";
 
 const allRoutes = express.Router();
 
@@ -22,5 +23,6 @@ allRoutes.use("/connections", connectionRequestRouter);
 allRoutes.use("/feed", feedRoutes);
 allRoutes.use("/upload", uploadRoutes);
 allRoutes.use("/invite", inviteRoutes);
+allRoutes.use("/chat", chatRoutes);
 
 export default allRoutes;
