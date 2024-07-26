@@ -10,6 +10,7 @@ import feedRoutes from "./feedRoutes.js";
 import uploadRoutes from "./uploadRoutes.js";
 import inviteRoutes from "./inviteRoutes.js";
 import chatRoutes from "./chatRoutes.js";
+import eventRoutes from "./eventRoutes.js";
 
 const allRoutes = express.Router();
 
@@ -24,5 +25,6 @@ allRoutes.use("/feed", feedRoutes);
 allRoutes.use("/upload", uploadRoutes);
 allRoutes.use("/invite", inviteRoutes);
 allRoutes.use("/chat", chatRoutes);
+allRoutes.use("/events", eventRoutes);
 
 export default allRoutes;

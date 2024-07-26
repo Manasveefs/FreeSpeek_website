@@ -4,7 +4,7 @@
     {
       "outputCapture": "std",
       "name": "Launch Program",
-      "program": "${workspaceFolder}/server.js",
+      "program": "${workspaceFolder}/socket-server.js",
       "request": "launch",
       "skipFiles": ["<node_internals>/"],
       "type": "pwa-node"
@@ -13,7 +13,7 @@
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen",
       "name": "nodemon",
-      "program": "${workspaceFolder}/src/server.js",
+      "program": "${workspaceFolder}/src/services/socket-server.js",
       "request": "launch",
       "restart": true,
       "runtimeExecutable": "nodemon",
