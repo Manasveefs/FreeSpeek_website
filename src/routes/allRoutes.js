@@ -11,6 +11,7 @@ import uploadRoutes from "./uploadRoutes.js";
 import inviteRoutes from "./inviteRoutes.js";
 import chatRoutes from "./chatRoutes.js";
 import eventRoutes from "./eventRoutes.js";
+import pollRoutes from "./pollRoutes.js";
 
 const allRoutes = express.Router();
 
@@ -26,5 +27,6 @@ allRoutes.use("/upload", uploadRoutes);
 allRoutes.use("/invite", inviteRoutes);
 allRoutes.use("/chat", chatRoutes);
 allRoutes.use("/events", eventRoutes);
+allRoutes.use("/polls", pollRoutes);
 
 export default allRoutes;
