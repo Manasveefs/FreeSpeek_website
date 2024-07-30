@@ -13,6 +13,7 @@ import chatRouter from "./chatRoutes.js";
 import eventRouter from "./eventRoutes.js";
 import pollRouter from "./pollRoutes.js";
 import safetyRouter from "./safetyRoutes.js";
+import privacyRouter from "./privacyRoutes.js";
 
 const allRoutes = express.Router();
 
@@ -30,5 +31,6 @@ allRoutes.use("/chat", chatRouter);
 allRoutes.use("/events", eventRouter);
 allRoutes.use("/polls", pollRouter);
 allRoutes.use("/safety-posts", safetyRouter);
+allRoutes.use("/privacy", privacyRouter);
 
 export default allRoutes;

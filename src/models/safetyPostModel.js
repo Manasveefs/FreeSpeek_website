@@ -9,11 +9,6 @@ const safetyPostSchema = new mongoose.Schema({
   description: { type: String, required: true },
   incidentDate: { type: Date, required: true },
   location: { type: String, required: true },
-  status: {
-    type: String,
-    enum: ["pending", "approved", "declined"],
-    default: "pending",
-  },
   createdAt: { type: Date, default: Date.now },
   poster: { type: String },
 });
