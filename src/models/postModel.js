@@ -1,5 +1,5 @@
 // src/models/postModel.js
-import mongoose from "mongoose";
+import mongoose, { mongo } from "mongoose";
 
 const postSchema = new mongoose.Schema({
   user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
@@ -14,6 +14,11 @@ const postSchema = new mongoose.Schema({
   views: { type: Number, default: 0 },
   contentType: { type: String, enum: ["text", "photo", "video", "link"] },
   taggedUsers: [{ type: mongoose.Schema.Types.ObjectId, ref: "user" }],
+  visibility: {
+    type: String,
+    enum: ["global", "local", "group"],
+    default: "global",
+  },
   location: {
     type: {
       type: String,
@@ -22,6 +27,14 @@ const postSchema = new mongoose.Schema({
     },
     coordinates: { type: [Number], required: false },
   },
+  groups: [{ type: mongoose.Schema.Types.ObjectId, ref: "Group" }],
+  allowedViewers: {
+    type: String,
+    enum: ["anyone", "neighborhood", "connections"],
+    default: "anyone",
+  },
+  createdAt: { type: Date, default: Date.now },
+  updatedAt: { type: Date, default: Date.now },
 });
 
 postSchema.index({ location: "2dsphere" });

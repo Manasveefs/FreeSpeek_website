@@ -5,10 +5,8 @@ import { v4 as uuidv4 } from "uuid";
 
 const postController = {
   createPost: async (req, res) => {
-    const { title, content, tags, date } = req.body;
-
-    // Log the received data
-    console.log("Received data:", req.body);
+    const { title, content, tags, date, visibility, groups, allowedViewers } =
+      req.body;
 
     let location = null;
 
@@ -22,9 +20,6 @@ const postController = {
             parseFloat(locationData.coordinates[1]),
           ],
         };
-
-        // Log the parsed location
-        console.log("Parsed location:", location);
       }
     } catch (err) {
       console.error("Location parsing error:", err);
@@ -66,6 +61,8 @@ const postController = {
             tags,
             date: date || Date.now(),
             location,
+            groups,
+            allowedViewers,
           });
 
           try {
@@ -90,6 +87,9 @@ const postController = {
         tags,
         date: date || Date.now(),
         location,
+        visibility,
+        groups,
+        allowedViewers,
       });
 
       try {
@@ -104,7 +104,9 @@ const postController = {
 
   getPosts: async (req, res) => {
     try {
-      const posts = await Post.find().populate("user", ["name"]);
+      const posts = await Post.find()
+        .populate("user", ["name"])
+        .populate("groups", ["name"]);
       res.json(posts);
     } catch (error) {
       console.error(error);
@@ -113,11 +115,18 @@ const postController = {
   },
 
   updatePost: async (req, res) => {
-    const { title, content } = req.body;
+    const { title, content, visibility, groups, allowedViewers } = req.body;
     const { postId } = req.params;
     const picture = req.file ? req.file.path : null;
 
-    if (!title && !content && !picture) {
+    if (
+      !title &&
+      !content &&
+      !picture &&
+      !visibility &&
+      !groups &&
+      !allowedViewers
+    ) {
       return res.status(400).json({ message: "Title or content is required" });
     }
 
@@ -134,6 +143,9 @@ const postController = {
 
       post.title = title || post.title;
       post.content = content || post.content;
+      post.visibility = visibility || post.visibility;
+      post.groups = groups || post.groups;
+      post.allowedViewers = allowedViewers || post.allowedViewers;
       if (picture) post.picture = picture;
 
       await post.save();

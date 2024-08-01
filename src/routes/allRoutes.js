@@ -14,6 +14,7 @@ import eventRouter from "./eventRoutes.js";
 import pollRouter from "./pollRoutes.js";
 import safetyRouter from "./safetyRoutes.js";
 import privacyRouter from "./privacyRoutes.js";
+import groupRouter from "./groupRoutes.js";
 
 const allRoutes = express.Router();
 
@@ -32,5 +33,6 @@ allRoutes.use("/events", eventRouter);
 allRoutes.use("/polls", pollRouter);
 allRoutes.use("/safety-posts", safetyRouter);
 allRoutes.use("/privacy", privacyRouter);
+allRoutes.use("/groups", groupRouter);
 
 export default allRoutes;
