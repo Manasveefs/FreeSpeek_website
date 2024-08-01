@@ -14,5 +14,10 @@ commentRouter.delete(
   authMiddleware,
   commentController.deleteComment
 );
+commentRouter.get(
+  "/post/:postId/comments",
+  authMiddleware,
+  commentController.getCommentForPost
+);
 
 export default commentRouter;

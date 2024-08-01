@@ -1,5 +1,4 @@
-// src/models/postModel.js
-import mongoose, { mongo } from "mongoose";
+import mongoose from "mongoose";
 
 const postSchema = new mongoose.Schema({
   user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
@@ -7,11 +6,12 @@ const postSchema = new mongoose.Schema({
   content: { type: String, required: true },
   picture: { type: String },
   date: { type: Date, default: Date.now },
-  likes: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
-  tags: [{ type: String }],
-  comments: { type: Number, default: 0 },
+  // likes: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+  likesCount: { type: Number, default: 0 },
+  commentsCount: { type: Number, default: 0 },
   shares: { type: Number, default: 0 },
   views: { type: Number, default: 0 },
+  tags: [{ type: String }],
   contentType: { type: String, enum: ["text", "photo", "video", "link"] },
   taggedUsers: [{ type: mongoose.Schema.Types.ObjectId, ref: "user" }],
   visibility: {
