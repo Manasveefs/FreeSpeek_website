@@ -104,9 +104,12 @@ const postController = {
 
   getPosts: async (req, res) => {
     try {
-      const posts = await Post.find()
-        .populate("user", ["name"])
-        .populate("groups", ["name"]);
+      const currentUser = await User.findById(req.user._id);
+
+      const posts = await Post.find({
+        user: { $nin: currentUser.blockedUsers },
+      }).populate("user", ["firstName", "lastName"]);
+
       res.json(posts);
     } catch (error) {
       console.error(error);

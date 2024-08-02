@@ -60,6 +60,7 @@ const UserSchema = new mongoose.Schema({
     emailDiscovery: { type: Boolean, default: true },
     phoneDiscovery: { type: String, default: true },
     sendInvitation: { type: Boolean, default: false },
+    blockedUsers: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
   },
 });
 
