@@ -1,8 +1,8 @@
 // src/server.js
+
 import express from "express";
 import dotenv from "dotenv";
-import path from "path";
-import { fileURLToPath } from "url";
+import cors from "cors"; // Import CORS
 import allRoutes from "./routes/allRoutes.js";
 import connectDB from "./db/config.js";
 
@@ -14,13 +14,15 @@ const app = express();
 connectDB();
 
 // Middleware and routes
+app.use(
+  cors({
+    origin: "http://localhost:5173", // Update this to match your frontend's URL
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    credentials: true,
+  })
+);
 app.use(express.json());
 app.use("/api", allRoutes);
-
-// Serve static files from the uploads directory
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

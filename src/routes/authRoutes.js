@@ -14,7 +14,7 @@ import adminMiddleware from "../middleware/adminMiddleware.js";
 const authRouter = express.Router();
 
 authRouter.post(
-  "/register",
+  "/signup",
   registerValidation,
   validate,
   authController.register

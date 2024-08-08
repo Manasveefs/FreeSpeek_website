@@ -5,24 +5,35 @@ import axios from "axios";
 
 const authController = {
   register: async (req, res) => {
-    const { email, password, location } = req.body;
+    const { email, password, location, firstName, lastName, username } =
+      req.body;
     try {
+      if (!email || !password || !firstName || !lastName || !username) {
+        return res.status(400).json({ message: "All fields are required" });
+      }
+
+      // Ensure location is provided
+      if (!location || (!location.coordinates && !location.address)) {
+        return res.status(400).json({ message: "Location is required" });
+      }
+
       let user = await User.findOne({ email });
       if (user) return res.status(400).json({ message: "User already exists" });
 
       const salt = await bcrypt.genSalt(10);
       const hashedPassword = await bcrypt.hash(password, salt);
 
-      let coordinates;
-      if (location.coordinates && location.coordinates.length === 2) {
-        coordinates = location.coordinates;
-      } else if (location.address) {
+      let coordinates = location.coordinates;
+      let address = location.address || "Unknown address";
+
+      if (!coordinates && address !== "Unknown address") {
         try {
+          // Geocode the address to get coordinates
           const response = await axios.get(
             `https://api.opencagedata.com/geocode/v1/json`,
             {
               params: {
-                q: location.address,
+                q: address,
                 key: process.env.OPENCAGE_API_KEY,
               },
             }
@@ -42,17 +53,41 @@ const authController = {
             .status(500)
             .json({ message: "Geocoding request failed", error });
         }
-      } else {
-        return res.status(400).json({ message: "Location data is required" });
+      }
+
+      if (!coordinates) {
+        // If coordinates are not set, use reverse geocoding to get the address
+        try {
+          const response = await axios.get(
+            `https://api.opencagedata.com/geocode/v1/json`,
+            {
+              params: {
+                q: `${coordinates[1]}+${coordinates[0]}`,
+                key: process.env.OPENCAGE_API_KEY,
+              },
+            }
+          );
+
+          if (response.data.results.length > 0) {
+            address = response.data.results[0].formatted;
+          } else {
+            address = "Unknown address";
+          }
+        } catch (error) {
+          console.error("Error during reverse geocoding:", error);
+        }
       }
 
       user = new User({
         email,
         password: hashedPassword,
+        firstName,
+        lastName,
+        username,
         location: {
           type: "Point",
           coordinates,
-          address: location.address,
+          address,
         },
         registeredWith: "email",
         lastLoginWith: "email",
